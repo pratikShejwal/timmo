@@ -1,0 +1,28 @@
+import express from "express"
+const app = express()
+import userRouter from "./routes/userRouter.js"
+import cors from "cors"
+
+import dotenv from "dotenv"
+dotenv.config()
+ 
+app.use(cors({
+    origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5176"],
+    credentials: true
+}))
+app.use(express.json())
+app.use(express.urlencoded({extended: true})) 
+ 
+import { ConectDB } from "./db/db.js"
+ConectDB()
+
+
+app.get("/", (req, res) => {
+    res.send("backend is running")
+})
+
+app.use("/api/user", userRouter)
+
+app.listen(3000, (req, res) => {
+    console.log("server is running on port 3000");
+})
