@@ -5,6 +5,8 @@ import todoRouter from "./routes/todoRouter.js"
 import stopwatchRouter from "./routes/stopwatchRouter.js" 
 // import countdownRouter from "./routes/countdownRouter.js"
 import cors from "cors"
+import cookieParser from "cookie-parser"
+
 
 import dotenv from "dotenv"
 dotenv.config()
@@ -15,8 +17,11 @@ app.use(cors({
 }))  
 app.use(express.json())
 app.use(express.urlencoded({extended: true})) 
+
+app.use(cookieParser()); 
  
 import { ConectDB } from "./db/db.js"
+import { isLoggedIn } from "./middlewares/isLoggedIn.js"
 ConectDB()
 
 
@@ -26,7 +31,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/user", userRouter)
 app.use("/api/todo", todoRouter)
-app.use("/api/stopwatch", stopwatchRouter)
+app.use("/api/stopwatch", isLoggedIn, stopwatchRouter)
 // app.use("/api/countdown", countdownRouter)
 
 app.listen(3000, (req, res) => {
