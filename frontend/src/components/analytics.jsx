@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 
 import {
   ChartContainer,
@@ -9,7 +9,8 @@ import {
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from "recharts"
 
 import Box from "../components/analytics/box"
-import Heatmap from "../components/analytics/heatmap"
+
+const Heatmap = React.lazy(() => import("../components/analytics/heatmap"))
 
 const data = [
   { month: "Jan", value: 340 },
@@ -32,13 +33,13 @@ const data = [
 
 function Analytics() {
   return (
-    <div className='h-screen min-w-0 w-screen overflow-y-auto bg-neutral-900 px-5  py-6 text-white sm:px-8 lg:px-10  '
+    <div className='h-screen w-screen min-w-0 overflow-y-auto bg-neutral-900 px-5 py-6 text-white sm:px-8 lg:px-10'
       style={{
         scrollbarWidth: "thin",
         scrollbarColor: "gray transparent",
       }} >
 
-      <div className='mx-auto flex w-full max-w-7xl flex-col gap-5 px-5'>
+      <div className='mx-auto flex w-full max-w-7xl flex-col gap-5'>
 
 
         <div className='flex flex-col gap-2 border-b border-white/10 pb-5'>
@@ -72,9 +73,9 @@ function Analytics() {
           }} />
         </div>
 
-        <Heatmap />
+        
 
-        <div className='overflow-hidden rounded-lg border border-white/10 bg-neutral-900 shadow-[0_24px_80px_rgba(0,0,0,0.28)]'>
+        <div className='min-w-0 overflow-hidden rounded-lg border border-white/10 bg-neutral-900 shadow-[0_24px_80px_rgba(0,0,0,0.28)]'>
           <div className='flex flex-col justify-between gap-3 border-b border-white/10 bg-neutral-800/50 px-5 py-4 sm:flex-row sm:items-center'>
             <div>
               <p className='font-poppins text-lg font-semibold text-white'>Time tracked</p>
@@ -87,7 +88,7 @@ function Analytics() {
           </div>
 
           <ChartContainer
-            className="h-[360px] w-full p-4 sm:h-[420px] sm:p-6"
+            className="h-[360px] min-h-[360px] w-full min-w-0 aspect-auto p-4 sm:h-[420px] sm:min-h-[420px] sm:p-6"
             config={{
               value: {
                 label: "Time",
@@ -125,6 +126,13 @@ function Analytics() {
           </ChartContainer>
         </div>
 
+        <Suspense
+          fallback={
+            <div className='h-56 rounded-lg border border-white/10 bg-neutral-900/80 animate-pulse' />
+          }
+        >
+          <Heatmap />
+        </Suspense>
 
       </div>
 

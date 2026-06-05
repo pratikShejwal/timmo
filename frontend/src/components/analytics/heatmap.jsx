@@ -16,6 +16,12 @@ function makeTrainingData(days = 365) {
 
 export default function ExampleFitness() {
   const data = React.useMemo(() => makeTrainingData(365), [])
+  const renderTooltip = React.useCallback((cell) => (
+    <div>
+      <div className="font-medium">{cell.value} minutes</div>
+      <div className="text-muted-foreground">{cell.label}</div>
+    </div>
+  ), [])
 
   return (
     <HeatmapCalendar
@@ -23,12 +29,7 @@ export default function ExampleFitness() {
       data={data}
       axisLabels
       legend={{ lessText: "Less", moreText: "More", placement: "bottom" }}
-      renderTooltip={(cell) => (
-        <div>
-          <div className="font-medium">{cell.value} minutes</div>
-          <div className="text-muted-foreground">{cell.label}</div>
-        </div>
-      )}
+      renderTooltip={renderTooltip}
     />
   )
 }

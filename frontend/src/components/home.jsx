@@ -15,9 +15,11 @@ function Home() {
 
   return (
 
-    <div className='flex overflow-hidden'>
+    <div className='flex h-screen w-screen overflow-hidden bg-neutral-900'>
         <Sidebar />
-        <Outlet />
+        <main className='min-w-0 flex justify-center'>
+            <Outlet />
+        </main>
         <Task />
 
     </div> 
