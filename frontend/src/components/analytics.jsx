@@ -9,20 +9,21 @@ import {
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from "recharts"
 
 import Box from "../components/analytics/box"
+import Heatmap from "../components/analytics/heatmap"
 
 const data = [
   { month: "Jan", value: 340 },
   { month: "Feb", value: 200 },
-  { month: "Jan", value: 410 },
-  { month: "Feb", value: 550 },
-  { month: "Jan", value: 390 },
-  { month: "Feb", value: 265 },
-  { month: "Jan", value: 410 },
-  { month: "Feb", value: 550 },
-  { month: "Jan", value: 390 },
-  { month: "Feb", value: 265 },
-  { month: "Jan", value: 340 },
-  { month: "Feb", value: 450 },
+  { month: "mar", value: 410 },
+  { month: "Apr", value: 550 },
+  { month: "May", value: 390 },
+  { month: "Jun", value: 265 },
+  { month: "Jul", value: 410 },
+  { month: "Aug", value: 550 },
+  { month: "Sep", value: 390 },
+  { month: "Oct", value: 265 },
+  { month: "Nov", value: 340 },
+  { month: "Dec", value: 450 },
 ]
 
 
@@ -31,8 +32,15 @@ const data = [
 
 function Analytics() {
   return (
-    <div className='h-screen w-screen overflow-y-auto bg-neutral-900 px-5 py-6 text-white sm:px-8 lg:px-10'>
-      <div className='mx-auto flex w-full max-w-7xl flex-col gap-5'>
+    <div className='h-screen min-w-0 w-screen overflow-y-auto bg-neutral-900 px-5  py-6 text-white sm:px-8 lg:px-10  '
+      style={{
+        scrollbarWidth: "thin",
+        scrollbarColor: "gray transparent",
+      }} >
+
+      <div className='mx-auto flex w-full max-w-7xl flex-col gap-5 px-5'>
+
+
         <div className='flex flex-col gap-2 border-b border-white/10 pb-5'>
           <p className='font-poppins text-sm  tracking-[0.1em] text-neutral-500'>Analytics</p>
           <div className='flex flex-col justify-between gap-3 sm:flex-row sm:items-end'>
@@ -64,6 +72,8 @@ function Analytics() {
           }} />
         </div>
 
+        <Heatmap />
+
         <div className='overflow-hidden rounded-lg border border-white/10 bg-neutral-900 shadow-[0_24px_80px_rgba(0,0,0,0.28)]'>
           <div className='flex flex-col justify-between gap-3 border-b border-white/10 bg-neutral-800/50 px-5 py-4 sm:flex-row sm:items-center'>
             <div>
@@ -71,7 +81,7 @@ function Analytics() {
               <p className='mt-1 font-poppins text-sm text-neutral-500'>Monthly focus minutes</p>
             </div>
             <div className='flex items-center gap-2 font-poppins text-xs uppercase tracking-[0.18em] text-neutral-500'>
-              <span className='h-2 w-2 rounded-full bg-white' />
+              <span className='h-2 w-2 rounded-full bg-green-500 ' />
               Time
             </div>
           </div>
@@ -114,7 +124,10 @@ function Analytics() {
             </BarChart>
           </ChartContainer>
         </div>
+
+
       </div>
+
     </div>
   )
 }

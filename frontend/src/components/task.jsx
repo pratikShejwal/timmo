@@ -134,15 +134,16 @@ function Task() {
 
         <div className=' text-neutral-400 w-full h-auto bg-amber-200 z-33 '>
 
-            <div onClick={handleSidebar} className='bg-neutral-700/50  rounded-md flex justify-center items-center p-0.5 cursor-pointer hover:text-white transition-all duration-100 absolute z-11 right-5 top-4.5 '>
+            <div onClick={handleSidebar} className='bg-neutral-700/50  rounded-md flex justify-center items-center p-0.5 cursor-pointer hover:text-white transition-all duration-100 absolute z-11 right-6 top-4.5 mr-3'>
                 <MdEditNote className='text-2xl ' />  
             </div>
 
         </div>
 
 
-
-        <div className={`h-screen bg-neutral-900/98 w-95  text-neutral-400 px-3 py-3 absolute flex flex-col   p-3    right-0 border border-y-0 border-r-0 border-l-neutral-700/50 transition-all z-10 duration-300 ${sidebar ? "-ml-none opacity-100" : " opacity-0 "}`}>
+        {
+           sidebar ? 
+            <div className={`h-screen bg-neutral-900/98 text-neutral-400 px-3 py-3 absolute flex flex-col   p-3    right-0 border border-y-0 border-r-0 border-l-neutral-700/50 -ml-none opacity-100 w-95  transition-all z-10 duration-300 `}>
 
             <div className='flex items-center justify-between  border-2 border-neutral-700/40 border-x-0 border-t-0'>
                 <p className='font-poppins font-semibold  text-2xl text-neutral-400 pb-3 px-3 pt-1'>Tasks</p>
@@ -194,7 +195,13 @@ function Task() {
                 )}
             </div>
 
-        </div>
+            </div>
+            : 
+            <div></div>
+        }
+        
+
+
     </div>
     
   )
