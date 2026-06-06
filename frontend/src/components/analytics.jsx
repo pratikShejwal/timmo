@@ -68,8 +68,8 @@ function Analytics() {
           }} />
 
           <Box boxData={{
-            title: "Tasks completed",
-            time: "3/8"
+            title: "Average time",
+            time: "38 min"
           }} />
         </div>
 
@@ -128,7 +128,7 @@ function Analytics() {
 
         <Suspense
           fallback={
-            <div className='h-56 rounded-lg border border-white/10 bg-neutral-900/80 animate-pulse' />
+            <div className='h-56 rounded-lg border border-white/10 bg-neutral-900/80 animate-pulse'  />
           }
         >
           <Heatmap />
