@@ -36,20 +36,33 @@ function formatDateLabel(date) {
   })
 }
 
+function toLocalDateKey(date) {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, "0")
+  const d = String(date.getDate()).padStart(2, "0")
+  return `${y}-${m}-${d}`
+}
+
+function startOfLocalDay(date = new Date()) {
+  const d = new Date(date)
+  d.setHours(0, 0, 0, 0)
+  return d
+}
+
 function buildCalendarCells(data) {
   const valuesByDate = new Map(data.map((item) => [item.date, item.value]))
-  const today = new Date()
+
+  const today = startOfLocalDay(new Date())
   const start = new Date(today)
 
   start.setDate(today.getDate() - 364)
-  start.setHours(0, 0, 0, 0)
   start.setDate(start.getDate() - start.getDay())
 
   const cells = []
   const cursor = new Date(start)
 
   while (cursor <= today) {
-    const date = cursor.toISOString().slice(0, 10)
+    const date = toLocalDateKey(cursor)
     const value = valuesByDate.get(date) ?? 0
 
     cells.push({

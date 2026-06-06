@@ -2,6 +2,7 @@ import express from "express"
 const countdownRouter = express.Router()
 import countdownModel from "../model/countdown.js"
 import userModel from "../model/user.js"
+import { localDateKey, buildDailySeries } from "../utils/localDate.js"
 
 
 countdownRouter.post("/save", async (req, res) => {
@@ -21,7 +22,7 @@ countdownRouter.post("/save", async (req, res) => {
         }
 
         // calculate the total "totaltime" if the date is same and store in single place in database
-        const today = new Date().toISOString().split("T")[0];
+        const today = localDateKey();
 
         let existing = await countdownModel.findOne({
             userId: user._id,
@@ -52,8 +53,71 @@ countdownRouter.post("/save", async (req, res) => {
     }
 })
 
+// GET all statistics for logged-in user
+countdownRouter.get("/stats", async (req, res) => {
+    try {
+        const user = await userModel.findOne({ email: req.user.email });
 
+        if (!user) {
+            return res.status(404).json({ 
+                success: false,
+                message: "User not found" 
+            });
+        }
 
+        // Fetch all countdown records for the user
+        const allRecords = await countdownModel.find({ userId: user._id });
+
+        // Calculate total time (all-time)
+        const totalTime = allRecords.reduce((sum, record) => sum + record.totalTime, 0);
+
+        // Get today's time
+        const today = localDateKey();
+        const todayRecord = await countdownModel.findOne({ 
+            userId: user._id, 
+            date: today 
+        });
+        const todayTime = todayRecord?.totalTime || 0;
+
+        // Calculate average time per day
+        const uniqueDays = new Set(allRecords.map(r => r.date)).size;
+        const averageTime = uniqueDays > 0 ? Math.round(totalTime / uniqueDays) : 0;
+
+        const dateMap = new Map(allRecords.map((r) => [r.date, r.totalTime]))
+        const chartData = buildDailySeries(30, dateMap)
+        const heatmapData = buildDailySeries(365, dateMap)
+
+        // Calculate monthly stats (this month)
+        const currentDate = new Date();
+        const monthStart = localDateKey(new Date(currentDate.getFullYear(), currentDate.getMonth(), 1));
+        const monthlyRecords = await countdownModel.find({
+            userId: user._id,
+            date: { $gte: monthStart }
+        });
+        const monthlyTotal = monthlyRecords.reduce((sum, record) => sum + record.totalTime, 0);
+
+        return res.status(200).json({
+            success: true,
+            stats: {
+                totalTime,           // all-time total in seconds
+                todayTime,           // today's total in seconds
+                averageTime,         // average per day in seconds
+                monthlyTotal,        // this month's total in seconds
+                totalDays: uniqueDays // total days with records
+            },
+            chartData,               // last 30 days for bar chart
+            heatmapData,             // last 365 days for heatmap
+            msg: "Stats fetched successfully"
+        });
+
+    } catch(err) {
+        console.log("error fetching stats", err);
+        res.status(500).json({ 
+            success: false,
+            message: "Server error" 
+        });
+    }
+})
 
 
 
