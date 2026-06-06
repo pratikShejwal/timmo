@@ -16,10 +16,26 @@ const Heatmap = React.lazy(() => import("../components/analytics/heatmap"))
 
 
 
+const combineDailyData = (...datasets) => {
+  const combinedMap = new Map()
 
+  datasets.flat().forEach((item) => {
+    if (!item?.date) return
+    combinedMap.set(item.date, (combinedMap.get(item.date) || 0) + (item.time || 0))
+  })
 
+  return Array.from(combinedMap.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([date, time]) => ({ date, time }))
+}
 
-
+const formatChartDate = (dateStr) => {
+  const [year, month, day] = dateStr.split("-").map(Number)
+  return new Date(year, month - 1, day).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  })
+}
 
 
 
@@ -28,76 +44,52 @@ const Heatmap = React.lazy(() => import("../components/analytics/heatmap"))
 function Analytics() {
 
  // get stopwatch data
-  const [stopwatchData, setStopwatchData] = useState(0)
-  const [countdownData, setCountdownData] = useState(0)
+  const [stopwatchData, setStopwatchData] = useState({ totalTime: 0, todayTime: 0, averageTime: 0 })
+  const [countdownData, setCountdownData] = useState({ totalTime: 0, todayTime: 0, averageTime: 0 })
   const [chartData, setChartData] = useState([]);
   const [heatmapData, setHeatmapData] = useState([]);
 
-
-  const getStopwatchData = async () => {
-    try{
-      const res = await axios.get("api/stopwatch/stats")
-      setStopwatchData(res.data.stats)
-      setChartData(
-        res.data.chartData.map((item) => ({
-          date: new Date(item.date).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-          }),
-          time: item.time, 
-        }))
-      );
-      
-      return res.data.heatmapData || res.data.chartData;
-    } catch(err){
-      console.log("error while getting stopwacth data: ", err);
-      return [];
-    }
-  }
-  const getCountdownData = async () => {
-    try{
-      const res = await axios.get("api/countdown/stats")
-      setCountdownData(res.data.stats)
-      
-      return res.data.heatmapData || res.data.chartData;
-    } catch(err){
-      console.log("error while getting countdown data: ", err);
-      return [];
-    }
-  }
- 
   useEffect(() => {
-    const fetchHeatmapData = async () => {
-      const stopwatchChartData = await getStopwatchData();
-      const countdownChartData = await getCountdownData();
+    const fetchAnalyticsData = async () => {
+      try {
+        const [stopRes, countRes] = await Promise.all([
+          axios.get("api/stopwatch/stats"),
+          axios.get("api/countdown/stats"),
+        ])
 
-      // Combine both datasets by date
-      const combinedMap = new Map();
+        setStopwatchData(stopRes.data.stats)
+        setCountdownData(countRes.data.stats)
 
-      stopwatchChartData.forEach(item => {
-        combinedMap.set(item.date, {
-          date: item.date,
-          value: item.time
-        });
-      });
+        const combinedChart = combineDailyData(
+          stopRes.data.chartData,
+          countRes.data.chartData
+        )
 
-      countdownChartData.forEach(item => {
-        if (combinedMap.has(item.date)) {
-          combinedMap.get(item.date).value += item.time;
-        } else {
-          combinedMap.set(item.date, {
+        const combinedHeatmap = combineDailyData(
+          stopRes.data.heatmapData || stopRes.data.chartData,
+          countRes.data.heatmapData || countRes.data.chartData
+        )
+
+        setChartData(
+          combinedChart.map((item) => ({
+            date: formatChartDate(item.date),
+            time: item.time,
+          }))
+        )
+
+        setHeatmapData(
+          combinedHeatmap.map((item) => ({
             date: item.date,
-            value: item.time
-          });
-        }
-      });
+            value: item.time,
+          }))
+        )
+      } catch (err) {
+        console.log("error while fetching analytics data: ", err)
+      }
+    }
 
-      const finalData = Array.from(combinedMap.values());
-     
-      setHeatmapData(finalData);
-    };
-
-    fetchHeatmapData();
+    fetchAnalyticsData()
+    getStreak()
   }, []);
 
   const formatTime = (seconds) => {
@@ -118,6 +110,16 @@ function Analytics() {
 
 
 
+  const [streak, setStreak] = useState(0)
+
+  const getStreak = async () => {
+    try{
+      const res = await axios.get("/api/streak")
+      setStreak(res.data.currentStreak)
+    } catch(err){
+      console.log("error white getting streaks: ", err);
+    }
+  }
 
   return (
     <div className='h-screen w-screen min-w-0 overflow-y-auto bg-neutral-900 px-5 py-6 text-white sm:px-8 lg:px-10'
@@ -151,7 +153,7 @@ function Analytics() {
 
           <Box boxData={{
             title: "Current streak",
-            time: "14 days"
+            time: `${streak} days`
           }} />
 
           <Box boxData={{
