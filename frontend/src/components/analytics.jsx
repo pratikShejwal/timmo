@@ -48,17 +48,28 @@ function Analytics() {
   const [countdownData, setCountdownData] = useState({ totalTime: 0, todayTime: 0, averageTime: 0 })
   const [chartData, setChartData] = useState([]);
   const [heatmapData, setHeatmapData] = useState([]);
+  const [streak, setStreak] = useState(0)
+
+  const [loading, setLoading] = useState(true);
+
+
 
   useEffect(() => {
     const fetchAnalyticsData = async () => {
       try {
-        const [stopRes, countRes] = await Promise.all([
+
+        setLoading(true)
+
+
+        const [stopRes, countRes, streakRes] = await Promise.all([
           axios.get("api/stopwatch/stats"),
           axios.get("api/countdown/stats"),
+          axios.get("/api/streak"),
         ])
 
         setStopwatchData(stopRes.data.stats)
         setCountdownData(countRes.data.stats)
+        setStreak(streakRes.data.currentStreak ?? 0)
 
         const combinedChart = combineDailyData(
           stopRes.data.chartData,
@@ -85,11 +96,12 @@ function Analytics() {
         )
       } catch (err) {
         console.log("error while fetching analytics data: ", err)
+      } finally{
+        setLoading(false)
       }
     }
 
     fetchAnalyticsData()
-    getStreak()
   }, []);
 
   const formatTime = (seconds) => {
@@ -108,18 +120,6 @@ function Analytics() {
     return `${secs} s`;
   };
 
-
-
-  const [streak, setStreak] = useState(0)
-
-  const getStreak = async () => {
-    try{
-      const res = await axios.get("/api/streak")
-      setStreak(res.data.currentStreak)
-    } catch(err){
-      console.log("error white getting streaks: ", err);
-    }
-  }
 
   return (
     <div className='h-screen w-screen min-w-0 overflow-y-auto bg-neutral-900 px-5 py-6 text-white sm:px-8 lg:px-10'
@@ -141,25 +141,36 @@ function Analytics() {
         </div>
 
         <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4'>
-          <Box boxData={{
-            title: "Total time",
-            time: formatTime(stopwatchData.totalTime + countdownData.totalTime)
-          }} />
 
-          <Box boxData={{
-            title: "Today's time",
-            time: formatTime(stopwatchData.todayTime + countdownData.todayTime)
-          }} />
+          {loading ? Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-35 rounded-md bg-neutral-800 animate-pulse"
+            />
+            ))
+          : (
+            <>
+              <Box boxData={{
+                title: "Total time",
+                time: formatTime(stopwatchData.totalTime + countdownData.totalTime)
+              }} />
 
-          <Box boxData={{
-            title: "Current streak",
-            time: `${streak} days`
-          }} />
+              <Box boxData={{
+                title: "Today's time",
+                time: formatTime(stopwatchData.todayTime + countdownData.todayTime)
+              }} />
 
-          <Box boxData={{
-            title: "Average time",
-            time: formatTime(stopwatchData.averageTime + countdownData.averageTime)
-          }} />
+              <Box boxData={{
+                title: "Current streak",
+                time: `${streak} days`
+              }} />
+
+              <Box boxData={{
+                title: "Average time",
+                time: formatTime(stopwatchData.averageTime + countdownData.averageTime)
+              }} />
+            </>
+          )}
         </div>
 
         
@@ -176,57 +187,61 @@ function Analytics() {
             </div>
           </div>
 
-          <ChartContainer
-            className="h-[360px] min-h-[360px] w-full min-w-0 aspect-auto p-4 sm:h-[420px] sm:min-h-[420px]  sm:p-6"
-            config={{
-              value: {
-                label: "Time",
-                color: "rgba(255,255,255,0.92)",
-              },
-            }}
-          >
-            <BarChart data={chartData} margin={{ top: 20, right: 14, left: 10, bottom: 1 }} >
-              <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.08)"  />
-              <XAxis
-                dataKey="date"
-                axisLine={false}
-                tickLine={false}
-                tickMargin={12}
-                stroke="rgba(255,255,255,0.35)"
-              />
-              <YAxis
-                tickFormatter={(value) => {
-                  const hours = Math.floor(value / 3600);
-                  const mins = Math.floor((value % 3600) / 60);
+          {loading ? (
+            <div className="h-[420px] animate-pulse rounded-lg bg-neutral-800" />
+          ) : (
+            <ChartContainer
+              className="h-[360px] min-h-[360px] w-full min-w-0 aspect-auto p-4 sm:h-[420px] sm:min-h-[420px]  sm:p-6"
+              config={{
+                value: {
+                  label: "Time",
+                  color: "rgba(255,255,255,0.92)",
+                },
+              }}
+            >
+              <BarChart data={chartData} margin={{ top: 20, right: 14, left: 10, bottom: 1 }} >
+                <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.08)"  />
+                <XAxis
+                  dataKey="date"
+                  axisLine={false}
+                  tickLine={false}
+                  tickMargin={12}
+                  stroke="rgba(255,255,255,0.35)"
+                />
+                <YAxis
+                  tickFormatter={(value) => {
+                    const hours = Math.floor(value / 3600);
+                    const mins = Math.floor((value % 3600) / 60);
 
-                  if (hours > 0) return `${hours}h`;
-                  if (mins > 0) return `${mins}m`;
-                  return `${value}s`;
-                }}
-                axisLine={false}
-                tickLine={false}
-                tickMargin={8}
-                width={30}
-                stroke="rgba(255,255,255,0.35)"
-              />
-              <ChartTooltip
-                cursor={{ fill: "rgba(255,255,255,0.06)" }}
-                content={<ChartTooltipContent className="border border-white/13 bg-neutral-900 text-white" />}
-                
-              />
-              <Bar
-                dataKey="time"
-                fill="var(--color-value)"
-                radius={[7, 7, 0, 0]}
-                maxBarSize={46}
-              />
-            </BarChart>
-          </ChartContainer>
+                    if (hours > 0) return `${hours}h`;
+                    if (mins > 0) return `${mins}m`;
+                    return `${value}s`;
+                  }}
+                  axisLine={false}
+                  tickLine={false}
+                  tickMargin={8}
+                  width={30}
+                  stroke="rgba(255,255,255,0.35)"
+                />
+                <ChartTooltip
+                  cursor={{ fill: "rgba(255,255,255,0.06)" }}
+                  content={<ChartTooltipContent className="border border-white/13 bg-neutral-900 text-white" />}
+                  
+                />
+                <Bar
+                  dataKey="time"
+                  fill="var(--color-value)"
+                  radius={[7, 7, 0, 0]}
+                  maxBarSize={46}
+                />
+              </BarChart>
+            </ChartContainer>
+          )}
         </div>
 
         <Suspense
           fallback={
-            <div className='h-56 rounded-lg border border-white/10 bg-neutral-900/80 animate-pulse'  />
+            <div className='h-56 rounded-lg border border-white/10 bg-neutral-800 animate-pulse'  />
           }
         >
           <Heatmap data={heatmapData} formatTime={formatTime} />

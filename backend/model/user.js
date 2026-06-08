@@ -13,11 +13,7 @@ const userSchema = mongoose.Schema({
     password: {
         type: String,
         required: true
-    },
-    todoId: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "todo"
-    }]
+    }
 }, {timestamps: true})
 
 export default mongoose.model("user", userSchema)

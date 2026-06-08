@@ -20,7 +20,6 @@ function Home() {
         <main className='min-w-0 flex justify-center'>
             <Outlet />
         </main>
-        <Task />
 
     </div> 
   )
