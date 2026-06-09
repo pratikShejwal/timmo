@@ -127,7 +127,7 @@ function Countdown() {
     <div className="bg-neutral-900 p-4 sm:p-5 w-screen h-screen text-white justify-center flex flex-col items-center overflow-y-auto">
 
       {/* Timer Display */}
-      <p className="text-[55px] sm:text-6xl md:text-8xl lg:text-9xl xl:text-[200px] font-gothic font-bold text-center">
+      <p className="text-[55px] sm:text-6xl md:text-8xl lg:text-9xl xl:text-[200px] font-gothic font-bold text-center tabular-nums">
         {displayHours}:{displayMinutes}:{displaySeconds}
       </p>
 

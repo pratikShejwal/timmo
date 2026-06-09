@@ -95,7 +95,7 @@ function Stopwatch() {
   return (
     <div className='bg-neutral-900 p-4 sm:p-5 w-screen h-screen text-white  flex flex-col justify-center items-center overflow-y-auto'>
         
-        <p className="text-[55px] sm:text-6xl md:text-8xl lg:text-9xl xl:text-[200px] font-gothic font-bold text-center">
+        <p className="text-[55px] sm:text-6xl md:text-8xl lg:text-9xl xl:text-[200px] font-gothic font-bold text-center tabular-nums">
             {hours}:{minutes}:{seconds}
         </p>
 

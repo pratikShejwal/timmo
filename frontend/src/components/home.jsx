@@ -36,6 +36,33 @@ function Home() {
     );
   }, [outsideClick]);
 
+
+
+  const [timeDisplay,setTimeDisplay] = useState(() => {
+    const saved = localStorage.getItem("timeDisplay");
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(
+      "timeDisplay",
+      JSON.stringify(timeDisplay)
+    );
+  }, [timeDisplay]);
+
+
+  const [timeFormat, setTimeFormat] = useState(() => {
+    const saved = localStorage.getItem("timeFormat");
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(
+      "timeFormat",
+      JSON.stringify(timeFormat)
+    );
+  }, [timeFormat]);
+
   return (
 
     <div className='flex h-screen w-screen overflow-hidden bg-neutral-900'>
@@ -45,7 +72,12 @@ function Home() {
           outsideClick={outsideClick}
         />
         <main className='min-w-0 flex justify-center'>
-            <Outlet  context={{ sidebarOpt, setSidebarOpt, outsideClick, setOutsideClick }}  />
+            <Outlet  context={{ 
+              sidebarOpt, setSidebarOpt,
+              outsideClick, setOutsideClick, 
+              timeDisplay, setTimeDisplay,
+              timeFormat, setTimeFormat
+              }}  />
         </main>
 
     </div> 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useOutletContext } from "react-router";
+import { TbCropPortrait } from "react-icons/tb";
 
 function Settings() {
 
@@ -11,11 +12,13 @@ function Settings() {
 
   const { sidebarOpt, setSidebarOpt } = useOutletContext();
   const { outsideClick, setOutsideClick } = useOutletContext();
+  const { timeDisplay,setTimeDisplay } = useOutletContext();
+  const { timeFormat, setTimeFormat } = useOutletContext();
 
 
 
   return (
-    <div className='h-screen w-screen min-w-0 overflow-y-auto bg-neutral-900 px-5 py-6 text-white sm:px-8 lg:px-10 flex flex-col items-center ' 
+    <div className='h-screen w-screen min-w-0 overflow-y-auto bg-neutral-900 px-5 py-6 text-white sm:px-8 lg:px-10 flex flex-col items-center  ' 
       style={{
         scrollbarWidth: "thin",
         scrollbarColor: "gray transparent",
@@ -142,6 +145,96 @@ function Settings() {
                       </div>
                     </div>
               </div>
+            
+          </div>
+
+
+          <div className='w-full h-55 rounded-md bg-neutral-800/50 py-5 px-6 border-2 border-white/5 justify-between flex'>
+            <div className=' flex flex-col gap-2'>
+                <p className='font-poppins text-xl'>Time Display</p>
+                <p className='font-poppins text-sm text-neutral-500 w-60 tracking-tight'>Choose how time is displyaed across the app.</p>
+
+            </div>
+
+            <div className='rounded-md border-2 border-white/5 w-216 min-w-0 h-full flex flex-col gap-2 items-center justify-between py-5 '>
+                  
+              <div className='w-full h-20 px-5 flex justify-between  '>
+                <div className='flex flex-col gap-1'>
+                    <p className='font-poppins'>Clock Orientation</p>
+                    <p className='font-poppins text-sm text-neutral-500 '>Select the preferred time layout.</p>
+                </div>
+
+                <div className='flex gap-3  -mt-2 mb-1 font-poppins'>
+                    <div onClick={() =>setTimeDisplay(true)} className={`rounded-md  flex justify-center items-center cursor-pointer hover:bg-neutral-800/50 transition-all duration-200 w-40 h-full gap-3 ${ timeDisplay ? "bg-neutral-800/50 border-white border" : " border-white/5 border-2"}`}>
+                      <div className={`w-8 h-5 border-2 rounded-sm transition-all duration-200  ${timeDisplay ? "bg-white/10" : ""} `}/>
+                      <p>Horizontal</p>
+                    </div>
+                    <div onClick={() =>setTimeDisplay(false)} className={`rounded-md  flex justify-center items-center cursor-pointer hover:bg-neutral-800/50 transition-all duration-200 w-40 h-full gap-1.5  ${ !timeDisplay ? "bg-neutral-800/50 border-white border" : " border-2 border-white/5"}`}>
+                      <div className={`w-8 h-5 border-2 rounded-sm rotate-90 transition-all duration-200   ${!timeDisplay ? "bg-white/10" : ""} `}/>
+
+                      <p>Verticle</p>
+                    </div>
+                </div>
+              </div>
+
+              <div className='w-full border border-white/5 ' />
+
+
+              <div className='w-full h-20 px-5 flex justify-between  '>
+                <div className='flex flex-col gap-1 justify-center  mt-2 '>
+                    <p className='font-poppins'>Time Format</p>
+                    <p className='font-poppins text-sm text-neutral-500 '>choose your preferred time format.</p>
+                </div>
+
+                <div className='flex gap-3  -mb-2 mt-1 font-poppins'>
+                    <div onClick={() =>setTimeFormat(true)} className={`rounded-md  flex justify-around px-5 items-center cursor-pointer hover:bg-neutral-800/50 transition-all duration-200 w-40 h-full gap-3 ${ timeFormat ? "bg-neutral-800/50 border-white border" : " border-white/5 border-2"}`}>
+                      
+                      <div>
+                        <div
+                          className={`size-7 rounded-full border-2 flex items-center justify-center
+                            ${timeFormat
+                              ? "border-white"
+                              : "border-neutral-700"}
+                          `}
+                        >
+                          {timeFormat && (
+                            <div className="size-3 rounded-full bg-white" />
+                          )}
+                        </div>
+                      </div>
+
+                        <div className='flex flex-col '>
+                          <p>12 Hour</p>
+                          <p className='text-sm text-neutral-500'>AM/PM</p>
+                        </div>
+                      
+                    </div>
+                    <div onClick={() =>setTimeFormat(false)} className={`rounded-md  flex justify-around px-5 items-center cursor-pointer hover:bg-neutral-800/50 transition-all duration-200 w-40 h-full gap-1.5  ${ !timeFormat ? "bg-neutral-800/50 border-white border" : " border-2 border-white/5"}`}>
+                      
+                      <div>
+                        <div
+                          className={`size-7 rounded-full border-2 flex items-center justify-center
+                            ${!timeFormat
+                              ? "border-white"
+                              : "border-neutral-700"}
+                          `}
+                        >
+                          {!timeFormat && (
+                            <div className="size-3 rounded-full bg-white" />
+                          )}
+                        </div>
+                      </div>
+
+                      <div className='flex flex-col '>
+                        <p>24 Hour</p>
+                        <p className='text-sm text-neutral-500'>13:45</p>
+                      </div>
+                    </div>
+                </div>
+              </div>   
+
+                    
+            </div>
             
           </div>
 
