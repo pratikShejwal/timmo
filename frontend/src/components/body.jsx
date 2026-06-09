@@ -12,6 +12,8 @@ import ProtectedRoute from "./protectedRoute"
 import NoRoute from './NoRoute'
 
 function Body() {
+
+    
   return (
     <div className='flex overflow-hidden'>
         <BrowserRouter>

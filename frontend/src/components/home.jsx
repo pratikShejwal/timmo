@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Sidebar from './sidebar'
 import { Outlet } from 'react-router'
 import Task from "./task"
@@ -6,19 +6,46 @@ import { useNavigate } from 'react-router'
 
 function Home() {
 
-    const navigate = useNavigate()
-    const token = localStorage.getItem("token");
+  const navigate = useNavigate()
+  const token = localStorage.getItem("token");
 
-    if(!token){
-        navigate("/login")
-    }
+  if(!token){
+      navigate("/login")
+  }
+
+  const [sidebarOpt, setSidebarOpt] = useState(() => {
+    return localStorage.getItem("sidebarOpt") || "mix";
+  });
+
+
+  useEffect(() => {
+    localStorage.setItem("sidebarOpt", sidebarOpt);
+  }, [sidebarOpt]);
+
+
+
+  const [outsideClick, setOutsideClick] = useState(() => {
+    const saved = localStorage.getItem("outsideClick");
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(
+      "outsideClick",
+      JSON.stringify(outsideClick)
+    );
+  }, [outsideClick]);
 
   return (
 
     <div className='flex h-screen w-screen overflow-hidden bg-neutral-900'>
-        <Sidebar />
+        <Sidebar
+          sidebarOpt={sidebarOpt} 
+
+          outsideClick={outsideClick}
+        />
         <main className='min-w-0 flex justify-center'>
-            <Outlet />
+            <Outlet  context={{ sidebarOpt, setSidebarOpt, outsideClick, setOutsideClick }}  />
         </main>
 
     </div> 

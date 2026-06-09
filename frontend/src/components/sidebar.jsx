@@ -14,7 +14,7 @@ import { PiSignOutBold } from "react-icons/pi";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-function Sidebar() {
+function Sidebar({sidebarOpt, outsideClick}) {
 
 
   const [sidebar, setSidebar] = useState(true);
@@ -94,11 +94,12 @@ function Sidebar() {
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (
-            sidebar &&
-            sidebarRef.current &&
-            !sidebarRef.current.contains(event.target)
+                outsideClick &&
+                sidebar &&
+                sidebarRef.current &&
+                !sidebarRef.current.contains(event.target)
             ) {
-            setSidebar(false);
+                setSidebar(false);
             }
         };
 
@@ -107,17 +108,30 @@ function Sidebar() {
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [sidebar]);
+    }, [sidebar, outsideClick]);
+
+
+    useEffect(() => {
+        if (sidebarOpt === "hover") {
+            setSidebar(false);
+        }
+
+        if (sidebarOpt === "manual") {
+            setSidebar(true);
+        }
+    }, [sidebarOpt]);
 
 
 
     const timeoutRef = useRef(null);
 
-    // const handleLeave = () => {
-    // timeoutRef.current = setTimeout(() => {
-    //     setSidebar(false);
-    // }, 300);
-    // };
+    const handleLeave = () => {
+        if (sidebarOpt === "hover") {
+            timeoutRef.current = setTimeout(() => {
+            setSidebar(false);
+            }, 300);
+        }
+    };
 
     const handleEnter = () => {
     clearTimeout(timeoutRef.current);
@@ -131,8 +145,9 @@ function Sidebar() {
         <div
             className="fixed left-0 top-0 h-screen w-6 z-40"
             onMouseEnter={() => {
-                clearTimeout(timeoutRef.current);
+                if (sidebarOpt === "hover" || sidebarOpt === "mix") {
                 setSidebar(true);
+                }
             }}
         />
         
@@ -149,13 +164,14 @@ function Sidebar() {
             <div 
                 ref={sidebarRef}   
                 onMouseEnter={handleEnter}
+                onMouseLeave={handleLeave}
                 className={`${sidebar ?  "translate-x-0" : "-translate-x-full"}
                     transition-transform duration-300
                     h-screen w-60 bg-neutral-900/98
                     text-neutral-400 px-3 py-5 flex flex-col
                     border-r border-neutral-700/40
                     fixed left-0 top-0 z-50
-                    lg:relative border-r-neutral-700/40 border-y-0 border-l-0 border`}>
+                      border-r-neutral-700/40 border-y-0 border-l-0 border`}>
                         
                 <div className=" flex justify-between items-center w-full border-b-neutral-700/40 border-x-0 border-t-0 border-2 pb-3 px-3 ">
 
