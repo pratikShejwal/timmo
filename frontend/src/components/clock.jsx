@@ -88,10 +88,10 @@ function Clock() {
             `} > 
                 
                 <p className={` font-gothic leading-none  
-                    ${showSeconds ? " text-[37px] sm:text-[70px] md:text-[100px] lg:text-[150px] xl:text-[200px]" : " text-[57px] sm:text-[90px] md:text-[120px] lg:text-[200px] xl:text-[290px]"}
+                    ${showSeconds && timeDisplay ? " text-[37px] sm:text-[70px] md:text-[100px] lg:text-[150px] xl:text-[200px]" : " text-[57px] sm:text-[90px] md:text-[120px] lg:text-[200px] xl:text-[290px]"}
                 `}>{hours}:</p>
                 <p className={` font-gothic leading-none 
-                    ${showSeconds ? " text-[37px] sm:text-[70px] md:text-[100px] lg:text-[150px] xl:text-[200px]" : " text-[57px] sm:text-[90px] md:text-[120px] lg:text-[200px] xl:text-[290px]"}
+                    ${showSeconds && timeDisplay ? " text-[37px] sm:text-[70px] md:text-[100px] lg:text-[150px] xl:text-[200px]" : " text-[57px] sm:text-[90px] md:text-[120px] lg:text-[200px] xl:text-[290px]"}
                 
                 `}>{minutes}</p>
                 {showSeconds && timeDisplay && (

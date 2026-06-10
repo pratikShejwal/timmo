@@ -248,7 +248,7 @@ function Settings() {
               <div className='rounded-md  w-216 min-w-0 h-full flex items-center justify-between px-5 py-1 pb-3 '>
                     <div className='flex flex-col gap-2  '>
                       <p className='font-poppins'>Show Seconds</p>
-                      <p className='text-sm text-neutral-500 font-poppins tracking-tight'>Include seconds in the clock display.</p>
+                      <p className='text-sm text-neutral-500 font-poppins tracking-tight'>Include seconds in the clock display. (Horizontal mode only)</p>
                     </div>
 
                     <div onClick={() => setShowSeconds(!showSeconds)}>
