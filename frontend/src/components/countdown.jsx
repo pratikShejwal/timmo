@@ -4,6 +4,7 @@ import { FaPause } from "react-icons/fa6";
 import { FaPlay } from "react-icons/fa";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useOutletContext } from "react-router";
 
 function Countdown() {
 
@@ -123,8 +124,24 @@ function Countdown() {
 
 
 
+    const { textColor, setTextColor } = useOutletContext();
+
+    const textColors = {
+      white: "text-neutral-100",
+      gold: "text-[#F4C95D]",
+      coral: "text-[#FF7A90]",
+      blue: "text-[#7DD3FC]",
+      mint: "text-[#6EE7B7]",
+      purple: "text-[#A78BFA]",
+      peach: "text-[#FDBA74]",
+      lime: "text-lime-300"
+    };
+
+
+
   return (
-    <div className="bg-neutral-900 p-4 sm:p-5 w-screen h-screen text-white justify-center flex flex-col items-center overflow-y-auto">
+    <div className={`bg-neutral-900 p-4 sm:p-5 w-screen h-screen  justify-center flex flex-col items-center overflow-y-auto
+     ${textColors[textColor] || "text-white"}`}>
 
       {/* Timer Display */}
       <p className="text-[55px] sm:text-6xl md:text-8xl lg:text-9xl xl:text-[200px] font-gothic font-bold text-center tabular-nums">

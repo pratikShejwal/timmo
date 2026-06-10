@@ -63,6 +63,35 @@ function Home() {
     );
   }, [timeFormat]);
 
+
+  
+  const [textColor, setTextColor] = useState(() => {
+    return localStorage.getItem("textColor") || "white";
+  });
+
+
+  useEffect(() => {
+    localStorage.setItem("textColor", textColor);
+  }, [textColor]);
+
+
+
+
+  const [showSeconds , setShowSeconds ] = useState(() => {
+    const saved = localStorage.getItem("showSeconds ");
+    return saved !== null ? JSON.parse(saved) : false;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(
+      "showSeconds ",
+      JSON.stringify(showSeconds )
+    );
+  }, [showSeconds ]);
+
+
+
+
   return (
 
     <div className='flex h-screen w-screen overflow-hidden bg-neutral-900'>
@@ -76,7 +105,9 @@ function Home() {
               sidebarOpt, setSidebarOpt,
               outsideClick, setOutsideClick, 
               timeDisplay, setTimeDisplay,
-              timeFormat, setTimeFormat
+              timeFormat, setTimeFormat,
+              textColor, setTextColor,
+              showSeconds , setShowSeconds
               }}  />
         </main>
 
