@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Sidebar from './sidebar'
 import { Outlet } from 'react-router'
-import Task from "./task"
 import { useNavigate } from 'react-router'
 
 function Home() {

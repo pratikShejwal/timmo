@@ -10,6 +10,7 @@ import Stopwatch from './stopwatch'
 import Countdown from './countdown'
 import ProtectedRoute from "./protectedRoute"
 import NoRoute from './NoRoute'
+import Leaderboard from './leaderboard'
 
 function Body() {
 
@@ -32,6 +33,7 @@ function Body() {
                         <Route path='/countdown' element={<Countdown />} />
                         <Route path='/analytics' element={<Analytics />} />
                         <Route path='/settings' element={<Settings />} />
+                        <Route path='/leaderboard' element={<Leaderboard />} />
                         
                     </Route>
                 <Route path='*' element={<NoRoute />} />

@@ -1,7 +1,6 @@
 import express from "express"
 const app = express()
 import userRouter from "./routes/userRouter.js"
-import todoRouter from "./routes/todoRouter.js"
 import stopwatchRouter from "./routes/stopwatchRouter.js" 
 import countdownRouter from "./routes/countdownRouter.js"
 import streakRouter from "./routes/streakRouter.js"
@@ -31,7 +30,6 @@ app.get("/", (req, res) => {
 })
 
 app.use("/api/user", userRouter)
-app.use("/api/todo", todoRouter)
 app.use("/api/stopwatch", isLoggedIn, stopwatchRouter)
 app.use("/api/countdown", isLoggedIn, countdownRouter)
 app.use("/api/streak", isLoggedIn, streakRouter)

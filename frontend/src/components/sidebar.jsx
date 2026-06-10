@@ -5,6 +5,7 @@ import { FaRegChartBar } from "react-icons/fa";
 import { IoSettingsOutline } from "react-icons/io5";
 import { Link, useLocation } from "react-router";
 import { MdOutlineAccountCircle } from "react-icons/md";
+import { MdOutlineLeaderboard } from "react-icons/md";
 
 import { TbLayoutSidebarRightCollapseFilled } from "react-icons/tb";
 import { TbLayoutSidebarLeftCollapseFilled } from "react-icons/tb";
@@ -229,7 +230,18 @@ function Sidebar({sidebarOpt, outsideClick}) {
 
                         </div>
                     </Link>
+                
+                    <Link to="/leaderboard">
+                        <div className={`rounded-lg h-10 hover:bg-neutral-700/40 p-2 px-3  cursor-pointer active:scale-99 transition-all duration-100 font-gothic flex items-center gap-2 group mt-2 ${isActive("/leaderboard") ? "bg-neutral-700/40" : ""}`}>
 
+                            <MdOutlineLeaderboard className={`text-xl  transition-all duration-100  ${isActive("/leaderboard") ? "text-white" : "text-neutral-500"}`} />
+                            <p className={`font-poppins  transition-all duration-100   ${isActive("/leaderboard") ? "text-white" : "text-neutral-500"}`}>
+                                Leaderboard
+                            </p>
+
+                        </div>
+                    </Link>
+                
 
                     <Link to="/settings">
                         <div className={`rounded-lg h-10 hover:bg-neutral-700/40 p-2 px-3 mt-2 cursor-pointer active:scale-99 transition-all duration-100 font-gothic flex items-center gap-2 group ${isActive("/settings") ? "bg-neutral-700/40" : ""}`}>
