@@ -10,7 +10,7 @@ import Stopwatch from './stopwatch'
 import Countdown from './countdown'
 import ProtectedRoute from "./protectedRoute"
 import NoRoute from './NoRoute'
-import Leaderboard from './leaderboard'
+import Leaderboard from './leaderboard/leaderboard'
 
 function Body() {
 

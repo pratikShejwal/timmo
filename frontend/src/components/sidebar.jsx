@@ -257,7 +257,7 @@ function Sidebar({sidebarOpt, outsideClick}) {
 
 
 
-                    <div className="rounded-lg h-25 w-54 bg-neutral-800 overflow-x-hidden mt-68 px-2 flex flex-col gap-2 items-start ">
+                    <div className="rounded-lg h-25 w-54 bg-neutral-800 overflow-x-hidden mt-55 px-2 flex flex-col gap-2 items-start ">
 
                         <div className="flex gap-2 items-center mt-2 hover:bg-neutral-700 rounded-md px-3 transition-all duration-100 w-50 h-9">
                             <MdOutlineAccountCircle className="text-2xl text-neutral-500"/>
