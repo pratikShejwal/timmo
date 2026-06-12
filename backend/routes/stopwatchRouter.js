@@ -3,6 +3,7 @@ const stopwatchRouter = express.Router()
 import stopwatchModel from "../model/stopwatch.js"
 import userModel from "../model/user.js"
 import { localDateKey, buildDailySeries } from "../utils/localDate.js"
+import leaderboardModel from "../model/leaderboard.js";
 
 
 stopwatchRouter.post("/save", async (req, res) => {
@@ -41,6 +42,50 @@ stopwatchRouter.post("/save", async (req, res) => {
                 date: today
             });
         }
+
+        
+        
+        let leaderboardUser = await leaderboardModel.findOne({
+            userId: user._id
+        });
+
+        if (!leaderboardUser) {
+            leaderboardUser = await leaderboardModel.create({
+                userId: user._id,
+                todayTime: totalTime,
+                totalTime,
+                streak: 1,
+                lastActiveDate: today
+            });
+        } else {
+
+            leaderboardUser.todayTime += totalTime;
+            leaderboardUser.totalTime += totalTime;
+
+            if (leaderboardUser.lastActiveDate !== today) {
+
+                const yesterday = localDateKey(
+                    new Date(Date.now() - 86400000)
+                );
+
+                if (leaderboardUser.lastActiveDate === yesterday) {
+                    leaderboardUser.streak += 1;
+                } else {
+                    leaderboardUser.streak = 1;
+                }
+
+                leaderboardUser.lastActiveDate = today;
+            }
+
+            await leaderboardUser.save();
+        }           
+
+
+
+
+
+
+
 
         res.status(200).send({
             stopwatchTime: total,

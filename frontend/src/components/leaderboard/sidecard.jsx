@@ -43,7 +43,7 @@ function Sidecard() {
           </div>
 
           <div className='rounded-sm h-full w-full px-3 flex justify-center flex-col bg-green-500/5'>
-            <p className='text-white mb-0.5'>Percentage</p>
+            <p className='text-white mb-0.5'>Percentile</p>
             <p className='text-green-500 text-xl font-semibold'>1 %</p>
             <p className='text-neutral-500 text-xs '>Today</p>
           </div>
