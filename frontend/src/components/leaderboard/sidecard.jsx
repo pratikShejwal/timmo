@@ -1,21 +1,45 @@
 import React from 'react'
 import { MdArrowOutward } from "react-icons/md";
 
-function Sidecard() {
+
+
+
+
+function Sidecard({ me }) {
+
+  const formatTime = (seconds) => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+
+    if (hours > 0) {
+      return `${hours} h ${minutes} m ${secs} s`;
+    }
+
+    if (minutes > 0) {
+      return `${minutes} m ${secs} s`;
+    }
+
+    return `${secs} s`;
+  };
+  
+
+
+
   return (
     <div className='h-auto font-poppins rounded-md w-85 -mr-20 min-w-0 mt-15 px-3 py-3 border-2 border-white/10 bg-whit flex flex-col gap-3 bg-white/2'>
 
-      <div className='rounded-md  w-full h-41 p-3 flex flex-col items-center justify-center gap-2 bg-neutral-900 border-2 border-white/5'>
+      <div className='rounded-md  w-full h-41 p-3 flex flex-col items-center justify-center gap-2 bg-neutral-900 border-2 border-white/5 overflow-hidden truncate'>
         <div>
-            <div className='size-15 rounded-full bg-white/20 flex justify-center items-center font-semibold text-3xl'>
-              <p>N</p>
+            <div className='size-15 rounded-full bg-white/20 flex justify-center items-center font-semibold text-4xl'>
+              <p>{me?.name[0]?.toUpperCase()}</p>
             </div>
         </div>
         <div className='flex flex-col gap-2 items-center'>
-          <p className='text-xl font-semibold text-y'>Nigga</p>
+          <p className='text-xl font-semibold text-y truncate w-70 text-center '>{me?.name}</p>
           <p className='text-xs text-neutral-500 tracking-tight rounded-full bg-white/7 pr-3 pl-2 py-1 flex gap-1 items-center border border-white/10'>
           <MdArrowOutward className='size-4' />
-          Top 1% in Timmo users </p>
+          Top {me?.percentile}% in Timmo users </p>
         </div>
       </div>
 
@@ -26,25 +50,25 @@ function Sidecard() {
         <div className='w-full min-h-45 grid grid-cols-2 gap-2 justify-center items-center mt-2'>
           <div className='rounded-sm  h-full w-full px-3 flex justify-center flex-col bg-yellow-400/5'>
             <p className='text-white mb-0.5'>Rank</p>
-            <p className='text-yellow-400 text-xl font-semibold'># 1</p>
+            <p className='text-yellow-400 text-xl font-semibold'># {me?.rank}</p>
             <p className='text-neutral-500 text-xs '>Today</p>
           </div>
 
           <div className='rounded-sm h-full w-full px-3 flex justify-center flex-col bg-orange-400/5'>
             <p className='text-white mb-0.5 '>Streak</p>
-            <p className='text-orange-400 text-xl font-semibold'>67 days</p>
+            <p className='text-orange-400 text-xl font-semibold'>{me?.streak} days</p>
             <p className='text-neutral-500 text-xs '>Current</p>
           </div>
 
           <div className='rounded-sm h-full w-full px-3 flex justify-center flex-col bg-blue-400/7'>
             <p className='text-white mb-0.5'>Focus Time</p>
-            <p className='text-blue-400 text-xl font-semibold'>7h 23m</p>
+            <p className='text-blue-400 text-md font-semibold '>{formatTime(me?.todayTime)}</p>
             <p className='text-neutral-500 text-xs '>Today</p>
           </div>
 
           <div className='rounded-sm h-full w-full px-3 flex justify-center flex-col bg-green-500/5'>
             <p className='text-white mb-0.5'>Percentile</p>
-            <p className='text-green-500 text-xl font-semibold'>1 %</p>
+            <p className='text-green-500 text-xl font-semibold'>{me?.percentile} %</p>
             <p className='text-neutral-500 text-xs '>Today</p>
           </div>
 
@@ -73,7 +97,7 @@ function Sidecard() {
 
           <div className="mt-3 flex items-end gap-1">
             <span className="text-5xl font-bold text-white">
-              97
+              {me?.focusedMoreThan}
             </span>
             <span className="mb-1 text-2xl font-semibold text-neutral-500">
               %
@@ -81,7 +105,7 @@ function Sidecard() {
           </div>
 
           <p className="mt-2 w-[170px] text-sm text-neutral-400">
-            Focused more than 97% of users today.
+            Focused more than {me?.focusedMoreThan}% of users today.
           </p>
         </div>
       </div>

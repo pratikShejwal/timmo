@@ -62,32 +62,7 @@ function Sidebar({sidebarOpt, outsideClick}) {
   }
 
 
-   const [user, setUser] = useState(null);
-
-   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        const res = await axios.get(
-          "/api/user/me",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        );
-
-        setUser(res.data.user);
-
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
+ 
 
 
   const sidebarRef = useRef(null);
@@ -257,18 +232,14 @@ function Sidebar({sidebarOpt, outsideClick}) {
 
 
 
-                    <div className="rounded-lg h-25 w-54 bg-neutral-800 overflow-x-hidden mt-55 px-2 flex flex-col gap-2 items-start ">
+                    <div className="rounded-lg  h-auto w-54 bg-neutral-800 overflow-x-hidden mt-60 px-2 flex flex-col gap-2 items-start ">
 
-                        <div className="flex gap-2 items-center mt-2 hover:bg-neutral-700 rounded-md px-3 transition-all duration-100 w-50 h-9">
-                            <MdOutlineAccountCircle className="text-2xl text-neutral-500"/>
-
-                            <p className="text-neutral-500 font-semibold ">{user?.name}</p>
-                        </div>
+                        
                         
 
                         <Link to="/login">
-                            <div onClick={logoutHandler} className="flex gap-2 items-center  hover:bg-neutral-700 rounded-md px-3 transition-all duration-100 w-50 h-9 cursor-pointer">
-                                <PiSignOutBold className="text-xl text-neutral-500" /> 
+                            <div onClick={logoutHandler} className="flex gap-2 items-center  hover:bg-neutral-700 rounded-md px-3 transition-all duration-100 w-50 min-h-12 h-auto cursor-pointer my-2">
+                                <PiSignOutBold className="text-xl text-neutral-500 " /> 
 
                                 <p className="text-neutral-500 font-semibold ">Sign Out</p>
                             </div>

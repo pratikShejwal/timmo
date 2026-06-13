@@ -1,10 +1,160 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import List from "../leaderboard/list"
 import { FaCrown, FaFire } from "react-icons/fa6";
 import Sidecard from './sidecard';
+import axios from 'axios';
 
 
 function Leaderboard() {
+
+
+    const heroTexts = [
+        "is grinding like hell… and you're still waiting for her reply.",
+
+        "already locked in for today. Your bed is winning the battle.",
+
+
+        "is building their future. You're building a 37-tab browser collection.",
+
+        "is cooking something big. You're cooking excuses.",
+
+        "focused for hours today. Meanwhile, your screen time report is nervous.",
+
+        "chose discipline. You chose 'just one more reel'.",
+
+        "is farming focus points while you're farming dopamine.",
+
+        "woke up and decided to dominate. You woke up and checked Instagram.",
+
+        "is carrying the leaderboard on their back. You are carrying backlogs",
+
+        "is proof that procrastination is optional.",
+
+        "is in beast mode. You're in battery saver mode.",
+
+
+        "focused more today than most people focus all week.",
+
+        "is chasing dreams. You're chasing the perfect playlist.",
+
+        "is locked in. Your attention span left the chat.",
+
+        "is making history. You're making excuses."
+    ];
+
+    const getHeroText = () => {
+        return heroTexts[
+            Math.floor(Math.random() * heroTexts.length)
+        ];
+    };
+
+
+
+
+
+
+    const formatTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+
+        if (hours > 0) {
+        return `${hours} h ${minutes} m ${secs} s`;
+        }
+
+        if (minutes > 0) {
+        return `${minutes} m ${secs} s`;
+        }
+
+        return `${secs} s`;
+    };
+
+    
+    const getAvatarColor = (name) => {
+        let hash = 0;
+
+        for (let i = 0; i < name.length; i++) {
+            hash = name.charCodeAt(i) + ((hash << 5) - hash);
+        }
+
+        const hue = hash % 360;
+
+        return `hsla(${hue}, 70%, 60%, 0.25)`; // low opacity
+    };
+  
+
+    
+    const getRankStyle = (rank) => {
+        if (rank === 1) {
+            return {
+                className:
+                "border-2 border-yellow-500 bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-transparent font-bold shadow-[0_0_10px_0px] shadow-yellow-400 ",
+                style: {
+                    animation: "glow 3s ease-in-out infinite"
+                }
+            };
+            
+        }
+
+        if (rank === 2) {
+            return {
+                className:
+                "border-2 bg-zinc-400/10 border-zinc-300/40 shadow-[0_0_10px_0px_rgba(212,212,216,0.08)]",
+                style: {
+                    animation: "silverGlow 3s ease-in-out infinite"
+                }
+            };
+        }
+
+        if (rank === 3) {
+            return {
+                className:
+                "border-2  bg-orange-500/10 border-orange-400/40 shadow-[0_0_10px_0px_rgba(251,146,60,0.08)] ",
+                style: {
+                    animation: "bronzeGlow 3s ease-in-out infinite"
+                }
+            };
+        }
+
+        return "bg-white/5 border-white/20 text-white";
+    };
+
+
+    
+
+
+    const [leaderboard, setLeaderboard] = useState([]);
+    const [me, setMe] = useState(null);
+    const [heroText, setHeroText] = useState("")
+
+    useEffect(() => {
+    const fetchLeaderboard = async () => {
+        
+        const [ meData, leaderboardData] = await Promise.all([
+            axios.get("api/leaderboard/me") ,           
+            axios.get("api/leaderboard"),
+        ]);
+
+        setMe(meData.data);
+        setLeaderboard(leaderboardData.data.leaderboard);
+
+
+        setHeroText(getHeroText());
+    };
+
+    fetchLeaderboard();
+
+    const interval = setInterval(() => {
+        fetchLeaderboard();
+    }, 5 * 60 * 1000); // update in every 5 minutes
+
+    return () => clearInterval(interval);
+    }, []);
+
+
+
+
+
   return (
     <div className='w-screen h-screen bg-neutral-900  justify-center flex pt-10 font-poppins overflow-y-scroll '
     style={{
@@ -45,14 +195,22 @@ function Leaderboard() {
                     <div className='flex flex-col gap-3 h-full justify-center pl-7 '>
                         <p className='text-2xl font-semibold tracking-tight w-100 '>
                             <span className='mr-2  text-amber-300 '>
-                                Nigga 
+                               {leaderboard[0]?.name}
                             </span>
-                            is grinding like hell… and you’re still waiting for her reply.
+                            {heroText}
                         </p>
+
                         <p className='text-neutral-500 text-xs tracking-tight'>
-                            Showing top 100 users. 
-                            <span> • Your rank: #1</span>
+                            Showing top 100 users.  
                         </p>
+
+                        <div className='flex gap-2 -mt-2.5'>
+                            
+                            
+                            <p className='text-neutral-500 text-xs tracking-tight'>Total users : {me?.usersNumber}</p>
+                            <p className='text-neutral-500 text-xs tracking-tight '>  Your rank : # {me?.rank}</p>
+                        </div>
+                        
                     </div>
 
                     <div className=' overflow-hidden w-full rounded-sm h-full'>
@@ -74,15 +232,15 @@ function Leaderboard() {
                 
                         <div className='rounded-md border-2 border-white/10 w-250 h-auto   mt-2 '>
                 
-                            <div className='border-b-2 border-white/10 gap-10 font-poppins text-sm text-neutral-500 bg-white/5 rounded-t-md px-10 py-2 items-center flex  justify-between h-10 w-full  '>
+                            <div className='border-b-2 border-white/10 gap-10 font-poppins text-sm text-neutral-500 bg-white/6 rounded-t-sm px-10 py-2 items-center flex  justify-between h-10 w-full  '>
                 
-                                <div className='flex gap-10 mr-70'>
+                                <div className='flex gap-18 mr-70'>
                                     <p>Rank</p>
                                     <p>Name</p> 
                                 </div>
                                 
-                                <p>Today's time</p>
-                                <p className='mr-10'>Streak</p>
+                                <p className='mr-8'>Today's time</p>
+                                <p className='mr-12'>Streak</p>
                 
                             </div>
                 
@@ -90,175 +248,87 @@ function Leaderboard() {
                             <div className='w-full h-auto   flex flex-col pb-1 overflow-hidden'
                             >
                                     
-                                <div className="bg-white/2 border-b-2 border-white/10 px-10 py-1 w-full min-h-16 items-center grid grid-cols-[80px_1fr_195px_135px] ">
-                
-                
-                                    {/* Rank */}
-                                    <div className='rounded-full text-xs size-8 border-2 border-yellow-500 bg-gradient-to-r
-                                    from-amber-500/15
-                                    via-yellow-500/10
-                                    to-transparent flex items-center justify-center font-bold shadow-[0_0_10px_0px] shadow-yellow-400 '
-                                    style={{
-                                        animation: 'glow 3s ease-in-out infinite'
-                                    }}>
-                                        <span></span>
-                                        <span className=''>1</span>
-                                    </div>
-                
-                                    {/* User */}
-                                    <div className="flex items-center gap-2 min-w-0">
-                                        <div className="rounded-full size-8 bg-red-500/30 flex items-center justify-center text-xl">
-                                        <p>N</p>
-                                        </div>
-                
-                                        <div className='flex flex-col '>
-                                            <p className="truncate">
-                                                Nigga
-                                            </p>
-                                            <p className="text-xs text-yellow-400">
-                                                Has No Life
-                                            </p>
-                                        </div>
+                                
+                                {
+                                    leaderboard.map((user, i) =>{ 
                                         
-                                        
-                                    </div>
-                
-                                    {/* Time */}
-                                    <div className=''>
-                                        <p>7h 23m</p>
-                                    </div>
-                
-                                    {/* Streak */}
-                                    <div className="flex items-center gap-1  justify-center ">
-                                        <FaFire className="text-white" />
-                                        <span>67 days</span>
-                                    </div>
-                                </div>
+                                        const rankStyle = getRankStyle(i + 1);
+                                        const isMe = user.userId === me?.userId;
+
+                                        return(
+                                            <div key={user._id || i} className={`bg-white/2 border-b-2 border-white/10 px-10 py-1 w-full min-h-16 items-center grid grid-cols-[80px_1fr_195px_135px] 
+                                            
+                                                ${isMe
+                                                    ? `
+                                                    bg-white/5
+                                                    `
+                                                    : ""
+                                                }
+                                                
+                                            `}>
+                        
+                        
+                                            {/* Rank */}
+                                            <div className={`rounded-full text-xs size-8  flex items-center  justify-center font-bold ${rankStyle.className}
+                                            
+                                            
+                                             ${getRankStyle(i + 1)}
+                                            `}
+                                            style={rankStyle.style}>
+                                                <span className=''>{i + 1}</span>
+                                            </div>
+                        
+                                            {/* User */}
+                                            <div className="flex items-center gap-2 min-w-0">
+                                                <div className="rounded-full size-8  flex items-center justify-center text-xl"
+                                                    style={{
+                                                        backgroundColor: getAvatarColor(user?.name)
+                                                    }}
+                                                >
+                                                <p>{user?.name[0]?.toUpperCase()}</p>
+                                                </div>
+                        
+                                                <div className="flex flex-col">
+                                                    <div className="flex items-center gap-2">
+
+                                                        <p className="truncate">
+                                                            {user?.name}
+                                                        </p>
+
+                                                        {isMe && (
+                                                            <span className="
+                                                                text-[10px]
+                                                                px-2 py-0.5
+                                                                rounded-full
+                                                                bg-yellow-500/15
+                                                                text-yellow-300
+                                                                border border-yellow-500/20
+                                                                font-semibold
+                                                            ">
+                                                                YOU
+                                                            </span>
+                                                        )}
+
+                                                    </div>
+                                                </div>
+                                                
+                                                
+                                            </div>
+                        
+                                            {/* Time */}
+                                            <div className=''>
+                                                <p>{formatTime(user?.todayTime)}</p>
+                                            </div>
+                        
+                                            {/* Streak */}
+                                            <div className="flex items-center gap-1  justify-center ">
+                                                <FaFire className="text-amber-600" />
+                                                <span>{user?.streak}</span>
+                                            </div>
+                                        </div> 
+                                    )})
+                                }    
                                     
-                                <div className="bg-white/2 border-b-2 border-white/10 px-10 py-1 w-full min-h-16 items-center grid grid-cols-[80px_1fr_195px_135px] ">
-                
-                
-                                    {/* Rank */}
-                                    <div className='rounded-full text-xs size-8  flex items-center border-2 justify-center font-bold bg-zinc-400/5
-                                    border-zinc-300/40
-                                    shadow-[0_0_20px_rgba(212,212,216,0.08)]'
-                                    style={{
-                                        animation: 'silverGlow 3s ease-in-out infinite'
-                                    }}>
-                                        <span></span>
-                                        <span className=''>2</span>
-                                    </div>
-                
-                                    {/* User */}
-                                    <div className="flex items-center gap-2 min-w-0">
-                                        <div className="rounded-full size-8 bg-purple-400/30 flex items-center justify-center text-xl">
-                                        <p>R</p>
-                                        </div>
-                
-                                        <div className='flex flex-col '>
-                                            <p className="truncate">
-                                                Ram
-                                            </p>
-                                            <p className="text-xs text-slate-400 font-medium">
-                                                Touch Grass
-                                            </p>
-                                        </div>
-                                        
-                                        
-                                    </div>
-                
-                                    {/* Time */}
-                                    <div className=''>
-                                        <p>4h 13m</p>
-                                    </div>
-                
-                                    {/* Streak */}
-                                    <div className="flex items-center gap-1  justify-center ">
-                                        <FaFire className="text-white" />
-                                        <span>12 days</span>
-                                    </div>
-                                </div>
-                
-                                    
-                                <div className="bg-white/2 border-b-2 border-white/10 px-10 py-1 w-full min-h-16 items-center grid grid-cols-[80px_1fr_195px_135px] ">
-                
-                
-                                    {/* Rank */}
-                                    <div className='rounded-full text-xs size-8  flex items-center border-2 justify-center font-bold bg-orange-500/5
-                                    border-orange-400/40
-                                    shadow-[0_0_20px_rgba(251,146,60,0.08)]'
-                                    style={{
-                                        animation: 'bronzeGlow 3s ease-in-out infinite'
-                                    }}>
-                                        <span></span>
-                                        <span className=''>3</span>
-                                    </div>
-                
-                                    {/* User */}
-                                    <div className="flex items-center gap-2 min-w-0">
-                                        <div className="rounded-full size-8 bg-yellow-400/30 flex items-center justify-center text-xl">
-                                        <p>J</p>
-                                        </div>
-                
-                                        <div className='flex flex-col '>
-                                            <p className="truncate">
-                                                Jack
-                                            </p>
-                                            <p className="text-xs text-orange-400/80">
-                                            Locked In
-                                            </p>
-                                        </div>
-                                        
-                                        
-                                    </div>
-                
-                                    {/* Time */}
-                                    <div className=''>
-                                        <p>2h 3m</p>
-                                    </div>
-                
-                                    {/* Streak */}
-                                    <div className="flex items-center gap-1  justify-center ">
-                                        <FaFire className="text-white" />
-                                        <span>3 days</span>
-                                    </div>
-                                </div>
-                                    
-                                <div className="bg-white/2 border-b-2 border-white/10 px-10 py-1 w-full min-h-16 items-center grid grid-cols-[80px_1fr_195px_135px] ">
-                
-                
-                                    {/* Rank */}
-                                    <div className='rounded-full text-xs size-8  flex items-center  justify-center font-bold bg-white/5
-                                    border-white/20'>
-                                        <span className=''>4</span>
-                                    </div>
-                
-                                    {/* User */}
-                                    <div className="flex items-center gap-2 min-w-0">
-                                        <div className="rounded-full size-8 bg-blue-400/30 flex items-center justify-center text-xl">
-                                        <p>M</p>
-                                        </div>
-                
-                                        <div className='flex flex-col '>
-                                            <p className="truncate">
-                                                Mike
-                                            </p>
-                                        </div>
-                                        
-                                        
-                                    </div>
-                
-                                    {/* Time */}
-                                    <div className=''>
-                                        <p>1h 46m</p>
-                                    </div>
-                
-                                    {/* Streak */}
-                                    <div className="flex items-center gap-1  justify-center ">
-                                        <FaFire className="text-white" />
-                                        <span>1 days</span>
-                                    </div>
-                                </div>
                 
                 
                 
@@ -280,7 +350,7 @@ function Leaderboard() {
             </div>
 
             <div className='flex justify-center items-start'>
-                <Sidecard />
+                <Sidecard me={me} />
             </div>
         </div>
         
