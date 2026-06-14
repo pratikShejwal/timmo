@@ -12,6 +12,10 @@ function Home() {
       navigate("/login")
   }
 
+
+
+  // store setting options in local storage
+
   const [sidebarOpt, setSidebarOpt] = useState(() => {
     return localStorage.getItem("sidebarOpt") || "mix";
   });
@@ -88,7 +92,7 @@ function Home() {
     );
   }, [showSeconds ]);
 
-
+  // end of the setting options local storage saving
 
 
   return (

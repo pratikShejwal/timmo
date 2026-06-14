@@ -27,7 +27,7 @@ function Login() {
                 if(res?.data?.success){
                     localStorage.setItem("token", res?.data?.token);
                     toast.success(res?.data?.msg)
-                    navigate("/")
+                    navigate("/clock")
                 }
             } catch(err){
                 console.log("error while login in frontend: ", err);

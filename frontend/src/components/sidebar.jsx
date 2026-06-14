@@ -157,11 +157,11 @@ function Sidebar({sidebarOpt, outsideClick}) {
 
 
 
-                <Link to="/">
-                    <div className={`rounded-lg h-10  p-2 px-3 mt-5 cursor-pointer active:scale-99 transition-all duration-100 hover:bg-neutral-700/40 font-gothic flex items-center gap-2 group ${isActive("/") ? "bg-neutral-700/40" : ""}`}>
+                <Link to="/clock">
+                    <div className={`rounded-lg h-10  p-2 px-3 mt-5 cursor-pointer active:scale-99 transition-all duration-100 hover:bg-neutral-700/40 font-gothic flex items-center gap-2 group ${isActive("/clock") ? "bg-neutral-700/40" : ""}`}>
 
-                        <HiOutlineHome className={`text-xl transition-all duration-100 ${isActive("/") ? "text-white" : "text-neutral-500"}`} />
-                        <p className={`font-poppins  transition-all duration-100  ${isActive("/") ? "text-white" : "text-neutral-500"}`}>
+                        <HiOutlineHome className={`text-xl transition-all duration-100 ${isActive("/clock") ? "text-white" : "text-neutral-500"}`} />
+                        <p className={`font-poppins  transition-all duration-100  ${isActive("/clock") ? "text-white" : "text-neutral-500"}`}>
                             Clock
                         </p>
 

@@ -11,6 +11,7 @@ import Countdown from './countdown'
 import ProtectedRoute from "./protectedRoute"
 import NoRoute from './NoRoute'
 import Leaderboard from './leaderboard/leaderboard'
+import Landing from './landing'
 
 function Body() {
 
@@ -28,7 +29,7 @@ function Body() {
                         </ProtectedRoute>
                     }>
 
-                        <Route path='/' element={<Clock />} />
+                        <Route path='/clock' element={<Clock />} />
                         <Route path='/stopwatch' element={<Stopwatch />} />
                         <Route path='/countdown' element={<Countdown />} />
                         <Route path='/analytics' element={<Analytics />} />
@@ -37,6 +38,7 @@ function Body() {
                         
                     </Route>
                 <Route path='*' element={<NoRoute />} />
+                <Route path='/' element={<Landing />} />
 
             </Routes>
         </BrowserRouter>
