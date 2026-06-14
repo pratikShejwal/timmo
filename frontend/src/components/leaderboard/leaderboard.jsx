@@ -234,7 +234,7 @@ function Leaderboard() {
                 <div className='rounded-md w-full min-h-50 border-2 border-white/5 pl-5 mt-2 font-poppins flex overflow-hidden sm:pl-7'>
                     <div className='h-full bg-yellow-300 w-0.5  -ml-7 [mask-image:linear-gradient(to_bottom,transparent,black_30%,black_60%,transparent)] '></div>
                     <div className='flex min-w-0 flex-1 flex-col gap-3 h-full justify-center py-5 pl-5 sm:pl-7'>
-                        <p className='text-xl font-semibold tracking-tight w-full max-w-100 sm:w-100 rounded-sm sm:text-2xl'>
+                        <div className='text-xl font-semibold tracking-tight w-full max-w-100 sm:w-100 rounded-sm sm:text-2xl'>
                             {
                                 loading ? (
                                     <div className='h-20 w-full max-w-100  rounded-sm bg-neutral-800 animate-pulse'>
@@ -250,7 +250,7 @@ function Leaderboard() {
                                 )
                             }
                             
-                        </p>
+                        </div>
 
 
                         {
