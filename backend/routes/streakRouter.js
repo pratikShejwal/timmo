@@ -8,21 +8,17 @@ import { localDateKey } from "../utils/localDate.js";
 
 streakRouter.get("/", async (req, res) => {
   try {
-    const user = await userModel.findOne({
-      email: req.user.email,
-    });
-
-    if (!user) {
-      return res.status(404).json({
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
         success: false,
-        message: "User not found",
+        message: "Unauthorized",
       });
     }
 
-    // Fetch stopwatch and countdown records in parallel
+    // Fetch stopwatch and countdown records in parallel using req.user.id
     const [stopwatchRecords, countdownRecords] = await Promise.all([
-      stopwatchModel.find({ userId: user._id }).lean(),
-      countdownModel.find({ userId: user._id }).lean()
+      stopwatchModel.find({ userId: req.user.id }).lean(),
+      countdownModel.find({ userId: req.user.id }).lean()
     ]);
 
     const dateSet = new Set([

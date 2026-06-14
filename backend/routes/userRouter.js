@@ -39,13 +39,13 @@ userRouter.post("/signup", async (req, res) => {
             })
         }
         const hash = await bcrypt.hash(password, 10)
-        await userModel.create({
+        const newUser = await userModel.create({
             name: name,
             email: email,
             password: hash
         })
         const token = jwt.sign(
-            { email },
+            { email, id: newUser._id, name: newUser.name },
             process.env.JWT_SECRET,
             { expiresIn: "7d" }
         )
@@ -101,7 +101,7 @@ userRouter.post("/login", async (req, res) => {
         }
 
         const token = jwt.sign(
-            { email },
+            { email, id: user._id, name: user.name },
             process.env.JWT_SECRET,
             { expiresIn: "7d" }
         )

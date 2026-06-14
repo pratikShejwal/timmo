@@ -95,17 +95,15 @@ countdownRouter.post("/save", async (req, res) => {
 // GET all statistics for logged-in user
 countdownRouter.get("/stats", async (req, res) => {
     try {
-        const user = await userModel.findOne({ email: req.user.email });
-
-        if (!user) {
-            return res.status(404).json({ 
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ 
                 success: false,
-                message: "User not found" 
+                message: "Unauthorized" 
             });
         }
 
-        // Fetch all countdown records for the user
-        const allRecords = await countdownModel.find({ userId: user._id }).lean();
+        // Fetch all countdown records for the user directly using req.user.id
+        const allRecords = await countdownModel.find({ userId: req.user.id }).lean();
 
         // Calculate total time (all-time)
         const totalTime = allRecords.reduce((sum, record) => sum + record.totalTime, 0);

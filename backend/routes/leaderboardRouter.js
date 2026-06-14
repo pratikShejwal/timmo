@@ -6,7 +6,6 @@ import userModel from "../model/user.js"
 import leaderboardModel from "../model/leaderboard.js"
 import { localDateKey } from "../utils/localDate.js";
 
-
 leaderboardRoute.get("/", async (req, res) => {
     try{
         const today = localDateKey()
@@ -36,41 +35,35 @@ leaderboardRoute.get("/", async (req, res) => {
             leaderboard
         });
 
-
     }  catch (err) {
         console.log("Error calculating leaderboard data:", err);
 
         res.status(500).json({
-        success: false,
-        message: "Server error",
+            success: false,
+            message: "Server error",
         });
-   
     }
-
 })
-
 
 leaderboardRoute.get("/me", async (req, res) => {
     try {
-        const user = await userModel.findOne({
-            email: req.user.email
-        });
-
-        if (!user) {
-            return res.status(404).json({
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({
                 success: false,
-                message: "User not found"
+                message: "Unauthorized"
             });
         }
         
         const today = localDateKey();
+        const userId = req.user.id;
+        const userName = req.user.name;
 
         // Run independent queries in parallel to minimize network round-trips
         const [usersNumber, countdownToday, stopwatchToday, meData] = await Promise.all([
             userModel.countDocuments(),
-            countdownModel.findOne({ userId: user._id, date: today }),
-            stopwatchModel.findOne({ userId: user._id, date: today }),
-            leaderboardModel.findOne({ userId: user._id })
+            countdownModel.findOne({ userId, date: today }),
+            stopwatchModel.findOne({ userId, date: today }),
+            leaderboardModel.findOne({ userId })
         ]);
 
         const todayTime =
@@ -82,7 +75,7 @@ leaderboardRoute.get("/me", async (req, res) => {
 
         if (!me) {
             me = new leaderboardModel({
-                userId: user._id,
+                userId,
                 todayTime,
                 streak: todayTime > 0 ? 1 : 0,
                 lastActiveDate: todayTime > 0 ? today : ""
@@ -137,8 +130,8 @@ leaderboardRoute.get("/me", async (req, res) => {
          
         res.json({
             usersNumber,
-            userId: user._id,
-            name: user.name,
+            userId,
+            name: userName,
             rank,
             focusedMoreThan,
             percentile,
@@ -153,7 +146,5 @@ leaderboardRoute.get("/me", async (req, res) => {
         });
     }
 });
-
-
 
 export default leaderboardRoute
