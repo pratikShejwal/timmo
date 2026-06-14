@@ -12,10 +12,10 @@ const userOrIpKey = (req) => req.user?.email || ipKeyGenerator(req.ip);
 
 export const authLimiter = rateLimit({
     windowMs: fifteenMinutes,
-    limit: 10,
+    limit: 20,
     standardHeaders: "draft-8",
     legacyHeaders: false,
-    message: jsonRateLimitMessage("Too many auth attempts. Please try again later.")
+    message: jsonRateLimitMessage("Too many auth attempts. Please try again after 60 seconds.")
 });
 
 export const leaderboardLimiter = rateLimit({

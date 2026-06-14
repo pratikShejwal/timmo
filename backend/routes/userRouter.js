@@ -139,6 +139,27 @@ userRouter.post("/logout", async (req, res) => {
 })
 
 
+// public product stats for landing page
+userRouter.get("/public-stats", async (req, res) => {
+    try {
+        const totalUsers = await userModel.countDocuments()
+
+        return res.status(200).json({
+            success: true,
+            stats: {
+                totalUsers
+            }
+        })
+    } catch (err) {
+        console.log("error fetching public stats:", err)
+        return res.status(500).json({
+            success: false,
+            msg: "Server error"
+        })
+    }
+})
+
+
 
 
 // get user data
