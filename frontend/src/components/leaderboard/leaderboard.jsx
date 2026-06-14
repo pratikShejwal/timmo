@@ -305,16 +305,11 @@ function Leaderboard() {
                 
                         <div className='rounded-md border-2 border-white/10 w-full h-auto mt-2 overflow-hidden'>
                 
-                            <div className='hidden border-b-2 border-white/10 gap-10 font-poppins text-sm text-neutral-500 bg-white/6 rounded-t-sm px-6 py-2 items-center justify-between h-10 w-full md:flex lg:px-10'>
-                
-                                <div className='flex gap-18 mr-70'>
-                                    <p>Rank</p>
-                                    <p>Name</p> 
-                                </div>
-                                
-                                <p className='mr-8'>Today's time</p>
-                                <p className='mr-12'>Streak</p>
-                
+                            <div className='hidden border-b-2 border-white/10 font-poppins text-sm text-neutral-500 bg-white/6 rounded-t-sm px-10 py-2 items-center h-10 w-full md:grid md:grid-cols-[80px_1fr_220px_135px]'>
+                                <p>Rank</p>
+                                <p>Name</p>
+                                <p>Today's time</p>
+                                <p className='text-center'>Streak</p>
                             </div>
                 
                 
