@@ -926,7 +926,7 @@ function Landing() {
 
   return (
     <div
-      className="h-screen w-screen overflow-y-auto bg-[#fafafa] text-neutral-950 font-sans selection:bg-black selection:text-white"
+      className="h-screen w-screen overflow-y-auto bg-[#fafafa] text-neutral-950 font-sans selection:bg-white selection:text-black"
       style={{
         scrollbarWidth: "thin",
         scrollbarColor: "#171717 transparent",
