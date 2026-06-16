@@ -105,8 +105,10 @@ function Countdown() {
      if (time === 0 && hasStarted && !isSaved) {
       setIsRunning(false);
       saveCountdown(); 
-      setIsSaved(true)
-      triggerSideCannons(); // 🎉 Trigger Side Cannons confetti!
+      setIsSaved(true);
+      if (initialTime > 0) {
+        triggerSideCannons(); // 🎉 Trigger Side Cannons confetti!
+      }
     }
 
     return () => clearInterval(interval);
