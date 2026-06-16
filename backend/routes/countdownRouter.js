@@ -1,6 +1,7 @@
 import express from "express"
 const countdownRouter = express.Router()
 import countdownModel from "../model/countdown.js"
+import stopwatchModel from "../model/stopwatch.js"
 import userModel from "../model/user.js"
 import { localDateKey, buildDailySeries } from "../utils/localDate.js"
 import leaderboardModel from "../model/leaderboard.js";
@@ -32,20 +33,37 @@ countdownRouter.post("/save", async (req, res) => {
         // calculate the total "totaltime" if the date is same and store in single place in database
         const today = localDateKey();
 
-        let existing = await countdownModel.findOne({
-            userId: user._id,
-            date: today
-        });
+        // Check cumulative time saved across both models today to enforce a 24-hour limit
+        const [existingCountdown, existingStopwatch] = await Promise.all([
+            countdownModel.findOne({ userId: user._id, date: today }),
+            stopwatchModel.findOne({ userId: user._id, date: today })
+        ]);
 
+        const currentTotal = (existingCountdown?.totalTime || 0) + (existingStopwatch?.totalTime || 0);
+        const MAX_DAILY_TIME = 24 * 60 * 60; // 86,400 seconds (24 hours)
+
+        if (currentTotal >= MAX_DAILY_TIME) {
+            return res.status(400).json({
+                success: false,
+                message: "Daily focus time limit of 24 hours reached."
+            });
+        }
+
+        let finalSavedSeconds = savedSeconds;
+        if (currentTotal + savedSeconds > MAX_DAILY_TIME) {
+            finalSavedSeconds = MAX_DAILY_TIME - currentTotal;
+        }
+
+        let existing = existingCountdown;
         let total;
 
         if (existing) {
-            existing.totalTime += savedSeconds;
+            existing.totalTime += finalSavedSeconds;
             await existing.save();
             total = existing;
         } else {
             total = await countdownModel.create({
-                totalTime: savedSeconds,
+                totalTime: finalSavedSeconds,
                 userId: user._id,
                 date: today
             });
@@ -58,7 +76,7 @@ countdownRouter.post("/save", async (req, res) => {
         if (!leaderboardUser) {
             leaderboardUser = await leaderboardModel.create({
                 userId: user._id,
-                todayTime: savedSeconds,
+                todayTime: finalSavedSeconds,
                 streak: 1,
                 lastActiveDate: today
             });
@@ -78,7 +96,7 @@ countdownRouter.post("/save", async (req, res) => {
                 leaderboardUser.lastActiveDate = today;
             }
 
-            leaderboardUser.todayTime += savedSeconds;
+            leaderboardUser.todayTime += finalSavedSeconds;
             await leaderboardUser.save();
         }
 
