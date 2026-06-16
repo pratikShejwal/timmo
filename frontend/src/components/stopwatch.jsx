@@ -47,6 +47,16 @@ const setElapsedTime = (value) =>
     const [, forceUpdate] = useState(0);
 
     useEffect(() => {
+        localStorage.setItem("stopwatch_isRunning", isRunning);
+        if (startTime !== null) {
+            localStorage.setItem("stopwatch_startTime", startTime.toString());
+        } else {
+            localStorage.removeItem("stopwatch_startTime");
+        }
+        localStorage.setItem("stopwatch_elapsedTime", elapsedTime.toString());
+    }, [isRunning, startTime, elapsedTime]);
+
+    useEffect(() => {
         let interval;
 
         if (isRunning) {

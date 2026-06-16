@@ -96,16 +96,10 @@ const timeUsed = initialTime - currentRemaining;
       toast.success(res?.data?.msg);
 
     } catch (err) {
-      console.log(err);
+      
       toast.error("Error saving countdown");
     }
   };
-
-
-  
-  
- 
-
 
   // sync input with timer before starting
   useEffect(() => {
@@ -115,28 +109,6 @@ const timeUsed = initialTime - currentRemaining;
       }
   }, [hours, minutes, seconds, isRunning, hasStarted]);
 
-// useEffect(() => {
-//   if (
-//     isRunning &&
-//     hasStarted &&
-//     !isSaved &&
-//     endTime &&
-//     Date.now() >= endTime &&
-//     !completionHandledRef.current
-//   ) {
-//     completionHandledRef.current = true;
-
-//     updateCountdown("isRunning", false);
-//     updateCountdown("time", 0);
-//     updateCountdown("isSaved", true);
-//     updateCountdown("hasStarted", false);
-//     saveCountdown();
-
-//     if (initialTime > 0) {
-//       triggerSideCannons();
-//     }
-//   }
-// }, [isRunning, hasStarted, isSaved, endTime]);
 
   const start = () => {
      if (stopwatchState.isRunning) {

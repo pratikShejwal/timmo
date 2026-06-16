@@ -8,7 +8,7 @@ function Home() {
 
   const navigate = useNavigate()
   const token = localStorage.getItem("token");
-  console.log("Home rerender");
+  
   if(!token){
       navigate("/login")
   }
